@@ -13,7 +13,7 @@ echo 'Connected to Mysql successfully';
 
   <h1> Added changes to test git</h1>
 </head>
-
+<h1> Using git and pushing changes</h1>
 
 <body style="background-image: url('background.png');">
     <h1>My first Apache</h1>
