@@ -15,7 +15,7 @@ echo 'Connected to Mysql successfully';
 </head>
 <h1> Using git and pushing changes</h1>
 <img width="1000px" height="500px" src="gitlogo.php"/>
-
+<h2> Adding new branch</h2>
 <body style="background-image: url('background.png');">
     <h1>My first Apache</h1>
   <p> Testing devops skills </p>
