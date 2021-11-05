@@ -1,11 +1,12 @@
 <?php
-$con = new mysqli("192.168.100.32", "admin", "password", "fiifi");
-if ($con->connect_errno) {
-    echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-}else{
+phpinfo()
+// $con = new mysqli("172.1", "admin", "password", "fiifi");
+// if ($con->connect_errno) {
+//     echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+// }else{
 
-echo 'Connected to Mysql successfully';
-}
+// echo 'Connected to Mysql successfully';
+// }
 ?>
 <html>
 <head>
