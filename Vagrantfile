@@ -6,19 +6,14 @@
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |config|
-  # The most common configuration options are documented and commented below.
-  # For a complete reference, please see the online documentation at
-  # https://docs.vagrantup.com.
-
-  # Every Vagrant development environment requires a box. You can search for
-  # boxes at https://vagrantcloud.com/search.
   config.vm.box = "bento/ubuntu-20.04"
+
   config.vm.provider "virtualbox" do |v|
-    v.memory = 1024
+    v.memory = 024
     v.cpus = 1
   end
 
-  config.vm.network "private_network", ip: "192.168.33.10"
+  config.vm.network "private_network", ip: "192.168.100.31"
 
 
 
