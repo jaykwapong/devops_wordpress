@@ -9,13 +9,16 @@ Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-20.04"
 
   config.vm.provider "virtualbox" do |v|
-    v.memory = 024
+    v.linked_clone = true
+    v.name = "web"
+    v.memory = 1024
     v.cpus = 1
   end
 
-  config.vm.network "private_network", ip: "192.168.100.31"
-
-
+  config.vm.define "web" do |web|
+  web.vm.hostname = "webserver"
+  web.vm.network "private_network" , ip: "172.28.128.3", bridge: 'en0: Wi-Fi (AirPort)'
+  end
 
   
 end
