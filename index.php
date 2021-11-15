@@ -13,7 +13,7 @@ echo "Connected successfully";
   <h1> Added changes to test git</h1>
 </head>
 <h1> Using git and pushing changes</h1>
-<img width="1000px" height="500px" src="gitlogo.php"/>
+<img width="1000px" height="500px" src="gitlogo.png"/>
 <h2> Adding new branch</h2>
 
 <h3>Test Merging</h3> 
