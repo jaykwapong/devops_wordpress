@@ -1,12 +1,10 @@
 <?php
-phpinfo()
-// $con = new mysqli("172.1", "admin", "Devops1!!", "fiifi");
-// if ($con->connect_errno) {
-//     echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-// }else{
-
-// echo 'Connected to Mysql successfully';
-// }
+//phpinfo();
+$conn = new mysqli("172.28.128.4", "admin", "Devops1!!", "fiifi");
+if (!$conn) {
+  die("Connection failed: " . mysqli_connect_error());
+}
+echo "Connected successfully";
 ?>
 <html>
 <head>
