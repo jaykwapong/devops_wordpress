@@ -1,0 +1,5 @@
+CREATE USER 'admin'@'172.28.128.3' IDENTIFIED BY 'Devops1!!';
+GRANT ALL PRIVILEGES ON * . * TO 'admin'@'172.28.128.3';
+ALTER USER 'admin'@'172.28.128.3' IDENTIFIED WITH mysql_native_password BY 'Devops1!!';
+FLUSH PRIVILEGES;
+CREATE DATABASE fiifi;
