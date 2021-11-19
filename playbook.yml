@@ -1,0 +1,44 @@
+---
+- hosts: all
+  become: true
+  # vars_files:
+  #   - vars/default.yml
+
+  tasks:
+    - name: Install prerequisites
+      apt: name={{ item }} update_cache=yes state=latest force_apt_get=yes
+      loop: [ 'aptitude' ]
+
+    - name: Install Apache
+      apt: name=apache2 update_cache=yes state=latest
+
+    - name: Install Php
+      apt: 
+        name:
+          - php 
+          - libapache2-mod-php 
+          - php-mysql
+          - php7.4-mysqli
+          - mysql-client
+
+    - name: Copy index test page
+      template:
+        src: "index.php"
+        dest: "/var/www/html/index.php"
+
+    - name: "UFW - Allow HTTP on port 80"
+      ufw:
+        rule: allow
+        port: "80"
+        proto: tcp
+
+  handlers:
+    - name: Reload Apache
+      service:
+        name: apache2
+        state: reloaded
+
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
