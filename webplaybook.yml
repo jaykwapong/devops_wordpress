@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: web
   become: true
   # vars_files:
   #   - vars/default.yml
@@ -22,10 +22,18 @@
           - mysql-client
 
     - name: Copy index test page
-      template:
-        src: "index.php"
-        dest: "/var/www/html/index.php"
-
+      ansible.builtin.copy:
+        src: "files/"
+        dest: "/var/www/html/"
+    - name: Remove default file 
+      ansible.builtin.file:
+        path: /var/www/html/index.html
+        state: absent
+    - name: Allow everything and enable UFW
+      community.general.ufw:
+        state: enabled
+        policy: allow
+        
     - name: "UFW - Allow HTTP on port 80"
       ufw:
         rule: allow
