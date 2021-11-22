@@ -1,6 +1,6 @@
 <?php
 //phpinfo();
-$conn = new mysqli("172.28.128.4", "admin", "Devops1!!", "fiifi");
+$conn = mysqli_connect("172.28.128.4", "admin", "Devops1!!", "fiifi");
 if (!$conn) {
   die("Connection failed: " . mysqli_connect_error());
 }

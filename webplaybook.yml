@@ -39,6 +39,12 @@
         rule: allow
         port: "80"
         proto: tcp
+        
+    - name: "UFW - Allow HTTP on port 80"
+      ufw:
+        rule: allow
+        port: "3306"
+        proto: tcp
 
   handlers:
     - name: Reload Apache

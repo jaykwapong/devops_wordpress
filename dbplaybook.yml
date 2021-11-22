@@ -11,14 +11,8 @@
        name: 
         - mysql-server 
         - python3-pymysql
-  
 
-    # - name: Copy index test page
-    #   template:
-    #     src: "index.php"
-    #     dest: "/var/www/html/index.php"
-
-    - name: Allow everything and enable UFW
+    - name: Enable firewall
       community.general.ufw:
         state: enabled
         policy: allow
@@ -29,36 +23,14 @@
         port: "3306"
         proto: tcp
 
-    # - name: update mysql root password for all root accounts  
-    #    mysql_user:  
-    #      name: root  
-    #      host: "{{ item }}"  
-    #      password: "{{ mysql_root_password }}"  
-    #      login_user: root  
-    #      login_password: "password"  
-    #      check_implicit_admin: yes  
-    #      priv: "*.*:ALL,GRANT"  
-    #    with_items:  
-    #       - "172.28.128.4"  
-    #       - 127.0.0.1  
-    #       - ::1  
-    #       - localhost 
-        
-    # - name: Create database user using hashed password with all database privileges
-    #   community.mysql.mysql_user:
-    #     name: bob
-    #     password: '*EE0D72C1085C46C5278932678FBE2C6A782821B4'
-    #     encrypted: yes
-    #     priv: '*.*:ALL'
-    #     state: present
-
-    # - name: Update Root user's Password
-    #   user: 
-    #     name: root
-    #     update_password: always 
-    #     password: "A$005$#+]RvcYa}gP3%H0SUwKc9Ve6vJVnxFWiJX/.PuylJgGQN1MkcrwtvE1MdNc0"
-
-    - name: Enable remote login to mysql
+    # - name: Enable remote login to mysql by allowing all hosts to connect
+    #   lineinfile:
+    #      path: /etc/mysql/mysql.conf.d/mysqld.cnf
+    #      regexp: '^mysqlx-bind-address'
+    #      line: 'mysqlx-bind-address = 0.0.0.0'
+    #      backup: yes
+   
+    - name: Enable remote login to mysql by allowing all hosts to connect
       lineinfile:
          path: /etc/mysql/mysql.conf.d/mysqld.cnf
          regexp: '^bind-address'
@@ -66,13 +38,6 @@
          backup: yes
       notify:
          - Restart mysql
-
-    - name: start and enable mysql service
-      service:
-        name: mysql
-        state: started
-        enabled: yes
-
 
     - name: creating mysql user admin
       mysql_user:
@@ -94,17 +59,23 @@
 
 
 
+    - name: start and enable mysql service
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+
   handlers:
     - name: Restart mysql
       service:
         name: mysql
         state: restarted
 
-    - name: Run mysql query
-      community.mysql.mysql_query:
-        query:
-          - CREATE USER 'admin'@'172.28.128.3' IDENTIFIED BY 'Devops1!!';
-          - GRANT ALL PRIVILEGES ON * . * TO 'admin'@'172.28.128.3';
-          - ALTER USER 'admin'@'172.28.128.3' IDENTIFIED WITH mysql_native_password BY 'Devops1!!';
-          - FLUSH PRIVILEGES;
-          - CREATE DATABASE fiifi;
+    # - name: Run mysql query
+    #   community.mysql.mysql_query:
+    #     query:
+    #       - CREATE USER 'admin'@'172.28.128.3' IDENTIFIED BY 'Devops1!!';
+    #       - GRANT ALL PRIVILEGES ON * . * TO 'admin'@'172.28.128.3';
+    #       - ALTER USER 'admin'@'172.28.128.3' IDENTIFIED WITH mysql_native_password BY 'Devops1!!';
+    #       - FLUSH PRIVILEGES;
+    #       - CREATE DATABASE fiifi;
