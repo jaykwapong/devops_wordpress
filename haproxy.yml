@@ -1,0 +1,11 @@
+- hosts: database
+  become: yes
+
+  tasks: 
+      - name: Install prerequisites
+      apt: name={{ item }} update_cache=yes state=latest force_apt_get=yes
+      loop: [ 'aptitude' ]
+
+    - name: "Configure Load balancer"
+          package:
+            name: haproxy
