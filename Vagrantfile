@@ -39,6 +39,7 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-20.04"
 config.vm.synced_folder ".", "/data"
+config.vm.synced_folder ".", "/vagrant"
   config.vm.provider "virtualbox" do |v|
     v.linked_clone = true
     v.memory = 1024
@@ -63,8 +64,9 @@ config.vm.synced_folder ".", "/data"
   config.vm.define "haproxy" do |haproxy|
     haproxy.vm.hostname = "haproxy"
     haproxy.vm.network "private_network", ip: "172.28.128.6"
-    db.vm.provision "ansible_local" do |ansible|
-      # ansible.playbook = "dbpra.yml"
+    haproxy.vm.provision "ansible_local" do |ansible|
+      ansible.playbook = "haproxy.yml"
+    end
     end  
 
   

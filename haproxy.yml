@@ -1,11 +1,12 @@
-- hosts: database
+- hosts: haproxy
   become: yes
 
   tasks: 
-      - name: Install prerequisites
+    - name: Install prerequisites
       apt: name={{ item }} update_cache=yes state=latest force_apt_get=yes
       loop: [ 'aptitude' ]
 
-    - name: "Install haproxy Load balancer"
-          package:
-            name: haproxy
+    - name: Install haproxy
+      apt: 
+       name: 
+        - haproxy 
