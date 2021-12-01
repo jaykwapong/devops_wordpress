@@ -48,15 +48,24 @@ config.vm.synced_folder ".", "/data"
   config.vm.define "web" do |web|
   web.vm.hostname = "webserver"
   web.vm.network "private_network", ip: "172.28.128.3"
-  # web.vm.provision "file", source: "index.php", destination: "~/"
-  # web.vm.provision "shell" , inline: $script_web
   end
 
+  config.vm.define "web1" do |web1|
+    web1.vm.hostname = "web1"
+    web1.vm.network "private_network", ip: "172.28.128.5"
+    end
+  
   config.vm.define "db" do |db|
     db.vm.hostname = "db"
     db.vm.network "private_network", ip: "172.28.128.4"
-    # db.vm.provision "shell" , inline: $script_db
     end
+
+  config.vm.define "haproxy" do |haproxy|
+    haproxy.vm.hostname = "haproxy"
+    haproxy.vm.network "private_network", ip: "172.28.128.6"
+    db.vm.provision "ansible_local" do |ansible|
+      # ansible.playbook = "dbpra.yml"
+    end  
 
   
 end
