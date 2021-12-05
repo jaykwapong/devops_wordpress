@@ -37,8 +37,9 @@
 # SCRIPT
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "bento/ubuntu-20.04"
+  
 config.vm.synced_folder ".", "/data"
+config.vm.box = "bento/centos-7"
 config.vm.synced_folder ".", "/vagrant"
   config.vm.provider "virtualbox" do |v|
     v.linked_clone = true
@@ -46,28 +47,14 @@ config.vm.synced_folder ".", "/vagrant"
     v.cpus = 1
   end
 
-  config.vm.define "web" do |web|
-  web.vm.hostname = "webserver"
-  web.vm.network "private_network", ip: "172.28.128.3"
+  config.vm.define "nginx" do |nginx|
+  nginx.vm.hostname = "nginx"
+  nginx.vm.network "private_network", ip: "172.28.128.3"
+  nginx.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "nginxplaybook.yml"
+  end
   end
 
-  config.vm.define "web1" do |web1|
-    web1.vm.hostname = "web1"
-    web1.vm.network "private_network", ip: "172.28.128.5"
-    end
-  
-  config.vm.define "db" do |db|
-    db.vm.hostname = "db"
-    db.vm.network "private_network", ip: "172.28.128.4"
-    end
-
-  config.vm.define "haproxy" do |haproxy|
-    haproxy.vm.hostname = "haproxy"
-    haproxy.vm.network "private_network", ip: "172.28.128.6"
-    haproxy.vm.provision "ansible_local" do |ansible|
-      ansible.playbook = "haproxy.yml"
-    end
-    end  
 
   
 end
