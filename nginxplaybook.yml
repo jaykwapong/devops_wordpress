@@ -42,96 +42,82 @@
 
     # - name: Start mysqld service
     #   systemd: name=mysqld state=started enabled=yes
-
       
-    # - name: Set MySQL root Password
+    # - name: get root password
+    #   shell: "grep 'A temporary password is generated for root@localhost' /var/log/mysqld.log | awk -F ' ' '{print $(NF)}'"
+    #   register: root_password
+      
+    # - name: update expired root user password
+    #   command: mysql --user root --password={{ root_password.stdout }} --connect-expired-password --execute="ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ root_password.stdout }}';"  
+        
+    # - name: Create MySQL user
     #   mysql_user:
     #     login_host: 'localhost'
     #     login_user: 'root'
-    #     login_password: ''
-    #     name: 'root'
+    #     login_password: '{{ root_password.stdout }}'
+    #     name: 'wpuser'
     #     password: 'password'
     #     state: present
+    #     login_unix_socket: /var/lib/mysql/mysql.sock
 
-    # - name: Install MySQL Packages
-    #   yum: name={{ item }} update_cache=yes state=latest
-    #   loop: [ 'mysql-server', 'php-mysqlnd', 'python3-PyMySQL' ]
- 
-    # - name: Start mysqld service
-    #   systemd: name=mysqld state=started enabled=yes
- 
-    - name: Set MySQL root Password
-      mysql_user:
-        login_host: 'localhost'
-        login_user: 'root'
-        login_password: 'h<Z24Or&i*/r'
-        name: 'root'
-        password: 'password'
-        state: present
-        login_unix_socket: /var/lib/mysql/mysql.sock
-
-    # - name: Create mysql user
-    #   mysql_user:
-    #     name: "wpuser"
-    #     password: "password"
-    #     priv: '*.*:ALL'
-    #     host: '%'
-    #     state: present
-    #     login_unix_socket: /var/run/mysqld/mysqld.sock
+    # # - name: Create mysql user
+    # #   mysql_user:
+    # #     name: "wpuser"
+    # #     password: "password"
+    # #     priv: '*.*:ALL'
+    # #     host: '%'
+    # #     state: present
+    # #     login_unix_socket: /var/run/mysqld/mysqld.sock
  
     # - name: Creates database for WordPress
     #   mysql_db:
     #     name: "wpdb"
     #     state: present
     #     login_user: root
-    #     login_password: "password"
-        
- 
-    # - name: Create MySQL user for WordPress
-    #   mysql_user:
-    #     name: "wpuser"
-    #     password: "password"
-    #     priv: "wpdb.*:ALL"
-    #     state: present
-    #     login_user: root
-    #     login_password: "password"   
-    #     login_unix_socket: /var/run/mysqld/mysqld.sock  
+    #     login_password: '{{ root_password.stdout }}'       
 
     # - name: Download and unpack latest WordPress
     #   unarchive:
     #     src: https://wordpress.org/latest.tar.gz
-    #     dest: "/var/www/devops"
+    #     dest: "/usr/share/nginx/html"
     #     remote_src: yes
-    #     creates: "/var/www/devops/wordpress"
+    #     creates: "/usr/share/nginx/html/wordpress/"
  
     # - name: Set ownership
     #   file:
-    #     path: "/var/www/devops"
+    #     path: "/usr/share/nginx/html/"
     #     state: directory
     #     recurse: yes
-    #     owner: apache
-    #     group: apache
+    #     owner: nginx
+    #     group: nginx
  
     # - name: Set permissions for directories
-    #   shell: "/usr/bin/find /var/www/devops/wordpress/ -type d -exec chmod 750 {} \\;"
+    #   shell: "usr/share/nginx/html/ -type d -exec chmod 750 {} \\;"
  
     # - name: Set permissions for files
-    #   shell: "/usr/bin/find /var/www/devops/wordpress/ -type f -exec chmod 640 {} \\;"
+    #   shell: "/usr/bin/find usr/share/nginx/html/ -type f -exec chmod 640 {} \\;"
+
+    - name: Change file ownership, group and permissions
+      ansible.builtin.file:
+        path: usr/share/nginx/html
+        state: directory
+        recurse: yes
+        mode: '777'
  
-    # - name: Copy sample config file
-    #   command: mv /var/www/devops/wordpress/wp-config-sample.php /var/www/devops/wordpress/wp-config.php creates=/var/www/devops/wordpress/wp-config.php
-    #   become: yes
+    - name: Copy sample config file
+      command: mv /usr/share/nginx/html/wordpress/wp-config-sample.php /usr/share/nginx/html/wordpress/wp-config.php creates=/usr/share/nginx/html/wordpress/wp-config.php
+      become: yes
  
-    # - name: Update WordPress config file
-    #   lineinfile:
-    #     path: "/var/www/devops/wordpress/wp-config.php"
-    #     regexp: "{{item.regexp}}"
-    #     line: "{{item.line}}"
-    #   with_items:
-    #     - {'regexp': "define\\( 'DB_NAME', '(.)+' \\);", 'line': "define( 'DB_NAME', 'wpdb' );"}
-    #     - {'regexp': "define\\( 'DB_USER', '(.)+' \\);", 'line': "define( 'DB_USER', 'wpuser' );"}
-    #     - {'regexp': "define\\( 'DB_PASSWORD', '(.)+' \\);", 'line': "define( 'DB_PASSWORD', 'password' );"}
+    - name: Update WordPress config file
+      lineinfile:
+        path: "/usr/share/nginx/html/wordpress/wp-config.php"
+        regexp: "{{item.regexp}}"
+        line: "{{item.line}}"
+      with_items:
+        - {'regexp': "define\\( 'DB_NAME', '(.)+' \\);", 'line': "define( 'DB_NAME', 'wpdb' );"}
+        - {'regexp': "define\\( 'DB_USER', '(.)+' \\);", 'line': "define( 'DB_USER', 'wpuser' );"}
+        - {'regexp': "define\\( 'DB_PASSWORD', '(.)+' \\);", 'line': "define( 'DB_PASSWORD', 'password' );"}
      
-    # - name: Restart httpd service
-    #   systemd: name=httpd state=restarted
-    #   become: yes
+    - name: Restart httpd service
+      systemd: name=httpd state=restarted
+      become: yes
