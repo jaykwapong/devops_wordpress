@@ -1,54 +1,70 @@
 - hosts: nginx   
   become: true
   tasks:
-    - name: Install nginx web server
-      yum: name=nginx state=installed update_cache=true
+    # - name: Install nginx web server
+    #   yum: name=nginx state=installed update_cache=true
 
-    - name: Install PHP Remi Repository
-      yum: name=http://rpms.remirepo.net/enterprise/remi-release-7.rpm update_cache=yes state=latest
+    # - name: Install PHP Remi Repository
+    #   yum: name=http://rpms.remirepo.net/enterprise/remi-release-7.rpm update_cache=yes state=latest
     
-    # - name: Enable PHP Remi Repository
-    #   # command: dnf module reset php -y
-    #   command: dnf enable php:remi-7.3 -y
-    - name: Installing php and extensions
-      yum:
-        enablerepo: "remi,remi-php70"
-        name:
-          - php
-          - php-common
-          - php-cli
-          - php-gd
-          - php-curl 
-          - php-mysqlnd
-          - php-fpm
-          - php-mysqli
-          - php-mbstring
-          - php-xml 
-          - php-xmlrpc 
-          - php-soap
-          - php-intl
-          - php-zip
-        state: latest
-
-    # - name: Install PHP Extensions
-    #   yum: name={{ item }} update_cache=yes state=latest
-    #   loop: 'php', 'php-curl', 'php-gd', 'php-mbstring', 'php-xml', 'php-xmlrpc', 'php-soap', 'php-intl', 'php-zip'
-
-    # - name: Install MySQL Packages
-    #   yum: 
-    #     name: 
-    #       - mysql-community-server
+    # # - name: Enable PHP Remi Repository
+    # #   # command: dnf module reset php -y
+    # #   command: dnf enable php:remi-7.3 -y
+    # - name: Installing php and extensions
+    #   yum:
+    #     enablerepo: "remi,remi-php70"
+    #     name:
+    #       - php
+    #       - php-common
+    #       - php-cli
+    #       - php-gd
+    #       - php-curl 
     #       - php-mysqlnd
-    #       - python3-PyMySQL
- 
-    - name: Install MySQL Server
-      package:
-        name: "{{ item }}"
-        state: latest
-      with_items:
-          - mariadb-server
-          - mariadb
-          # - python-mysqldb
+    #       - php-fpm
+    #       - php-mysqli
+    #       - php-mbstring
+    #       - php-xml 
+    #       - php-xmlrpc 
+    #       - php-soap
+    #       - php-intl
+    #       - php-zip
+    #     state: latest
+
+    # # - name: Install PHP Extensions
+    # #   yum: name={{ item }} update_cache=yes state=latest
+    # #   loop: 'php', 'php-curl', 'php-gd', 'php-mbstring', 'php-xml', 'php-xmlrpc', 'php-soap', 'php-intl', 'php-zip'
+
+    # # - name: Install MySQL Packages
+    # #   yum: 
+    # #     name: 
+    # #       - mysql-community-server
+    # #       - php-mysqlnd
+    # #       - python3-PyMySQL
+    # - name: Install Mysql Repository
+    #   yum: name=https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm update_cache=yes state=latest
+
+    # - name: Installing mysql and extensions
+    #   yum:
+    #     name:
+    #       - mysql-server
+
+    # # Examples from Ansible Playbooks
+    # # - name: install pip 
+    # # - easy_install:
+    # #     name: pip
+    # #     state: latest
+                      
+    # - name: Install Required pip modules
+    #   pip:
+    #     name: pymysql
+    #     state: present
+    #     executable: pip3
+
+    - name: Install MySQL-python, this is required for the task remove anonymous user
+      yum: 
+        name: 
+          - MySQL-python 
+        state: present
 
     - name: Start mysqld service
       systemd: name=mysqld state=started enabled=yes
