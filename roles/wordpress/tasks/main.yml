@@ -1,10 +1,9 @@
     - name: Download and unpack latest WordPress
       unarchive:
         src: https://wordpress.org/latest.tar.gz
-        dest: "/usr/share/nginx/html"
+        dest: "/usr/share/nginx/html/"
         remote_src: yes
-        creates: "/usr/share/nginx/html/wordpress/"
- 
+
     - name: Set ownership
       file:
         path: "/usr/share/nginx/html/"
@@ -16,7 +15,7 @@
 
     - name: Change file ownership, group and permissions
       ansible.builtin.file:
-        path: usr/share/nginx/html
+        path: /usr/share/nginx/html/
         state: directory
         recurse: yes
         mode: '777'
@@ -35,6 +34,3 @@
         - {'regexp': "define\\( 'DB_USER', '(.)+' \\);", 'line': "define( 'DB_USER', 'wpuser' );"}
         - {'regexp': "define\\( 'DB_PASSWORD', '(.)+' \\);", 'line': "define( 'DB_PASSWORD', 'password' );"}
      
-    - name: Restart httpd service
-      systemd: name=httpd state=restarted
-      become: yes

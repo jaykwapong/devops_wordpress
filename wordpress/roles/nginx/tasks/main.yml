@@ -1,2 +1,0 @@
-- name: Install nginx web server
-  yum: name=nginx state=installed update_cache=true
