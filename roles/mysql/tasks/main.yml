@@ -36,5 +36,6 @@
   mysql_db:
     name: "wpdb"
     state: present
-    login_user: root
-    login_password: '{{ root_password.stdout }}'       
+    login_user: wpuser
+    login_password: 'password'
+    priv: "*.*:ALL,GRANT"       

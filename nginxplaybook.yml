@@ -6,6 +6,6 @@
   roles:
     - nginx
     - php
-    # - mysql
+    - mysql
     # - firewall    
-    # - wordpress
+    - wordpress
