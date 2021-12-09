@@ -4,8 +4,8 @@
   vars_files:
     - vars/default.yml
   roles:
+    - firewall  
     - nginx
     - php
     - mysql
-    # - firewall    
     - wordpress

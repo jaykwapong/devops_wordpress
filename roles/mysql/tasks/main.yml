@@ -29,6 +29,7 @@
     login_password: '{{ root_password.stdout }}'
     name: 'wpuser'
     password: 'password'
+    priv: "*.*:ALL,GRANT" 
     state: present
     login_unix_socket: /var/lib/mysql/mysql.sock
 
@@ -38,4 +39,4 @@
     state: present
     login_user: wpuser
     login_password: 'password'
-    priv: "*.*:ALL,GRANT"       
+          
