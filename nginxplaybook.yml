@@ -1,11 +1,11 @@
-- hosts: nginx
-  gather_facts: False
-  become: true
-  vars_files:
-    - vars/default.yml
+- hosts: server
   roles:
+<<<<<<< Updated upstream:nginxplaybook.yml
     - firewall  
     - nginx
     - php
     - mysql
     - wordpress
+=======
+    - { role: geerlingguy.nginx }
+>>>>>>> Stashed changes:wordpressplaybook.yml
