@@ -1,36 +1,6 @@
-- name: Install nginx web server
-  yum: name=nginx state=installed update_cache=true
+- include_tasks: nginxubuntu.yml
+  when: ansible_distribution == 'Ubuntu'
 
-- name: Start Nginx
-  service: name=nginx enabled=yes state=started
+- include_tasks: nginxcentos.yml
+  when: ansible_distribution == 'CentOS'
 
-- name: Copy nginx configuration for wordpress
-  template: src=default.conf dest=/etc/nginx/conf.d/default.conf
-  notify: restart nginx
-
-- name: insert firewalld rule for nginx
-  firewalld: port={{ nginx_port }}/tcp permanent=true state=enabled immediate=yes
-  ignore_errors: yes
-
-- name: http service state
-  service: name=nginx state=started enabled=yes
-
-# - name: Update nginx confs for WordPress + PHP
-#   template: "src=default.conf dest=/etc/nginx/sites-available/{{server_hostname}} owner=www-data group=www-data mode=0644"
-#   become: yes
-
-# - name: Enable site
-#   file: src=/etc/nginx/sites-available/{{server_hostname}} dest=/etc/nginx/sites-enabled/{{server_hostname}} owner=www-data group=www-data state=link
-#   notify:
-#     - restart nginx
-#   become: yes
-# - name: Copy nginx configuration for wordpress
-#   template: src=default.conf dest=/etc/nginx/conf.d/default.conf
-#   notify: restart nginx
-
-# - name: insert firewalld rule for nginx
-#   firewalld: port={{ nginx_port }}/tcp permanent=true state=enabled immediate=yes
-#   ignore_errors: yes
-
-# - name: http service state
-#   service: name=nginx state=started enabled=yes

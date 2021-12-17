@@ -1,10 +1,9 @@
-[nginx]
+[all]
+172.28.128.3
+172.28.128.4
+
+[centos]
 172.28.128.3
 
-[nginx:vars]
-ansible_ssh_private_key_file=/Applications/XAMPP/xamppfiles/htdocs/devops/.vagrant/machines/db/virtualbox/private_key
-
-[all:vars]
-ansible_python_interpreter=/usr/bin/python3
-nginx_port: 80
-server_hostname: server.example.com
+[ubuntu]
+172.28.128.4
