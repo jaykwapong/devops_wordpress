@@ -1,41 +1,48 @@
-- name: Install Mysql Repository
-  apt: name=https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm update_cache=yes state=latest
-
 - name: Installing mysql and extensions
   apt:
     name:
       - mysql-server
-- name: Install MySQL-python, this is required for the task remove anonymous user
-  apt: 
-    name: 
-      - MySQL-python 
-    state: present
+      - python3-pymysql
+# MySQL Configuration
+# - name: Set the root password
+#   mysql_user:
+#     name: root
+#     password: "{{ mysql_root_password }}"
+#     login_unix_socket: /var/run/mysqld/mysqld.sock
+#   tags: [ mysql, mysql-root ]
 
-- name: Start mysqld service
-  systemd: name=mysqld state=started enabled=yes
-  
-- name: get root password
-  shell: "grep 'A temporary password is generated for root@localhost' /var/log/mysqld.log | awk -F ' ' '{print $(NF)}'"
-  register: root_password
-  
-- name: update expired root user password
-  command: mysql --user root --password={{ root_password.stdout }} --connect-expired-password --execute="ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ root_password.stdout }}';"  
-    
-- name: Create MySQL user
+- name: Remove all anonymous user accounts
   mysql_user:
-    login_host: 'localhost'
-    login_user: 'root'
-    login_password: '{{ root_password.stdout }}'
-    name: 'wpuser'
-    password: 'password'
-    priv: "*.*:ALL,GRANT" 
-    state: present
-    login_unix_socket: /var/lib/mysql/mysql.sock
+    name: ''
+    host_all: yes
+    state: absent
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  tags: [ mysql ]
 
-- name: Creates mysql database for WordPress
+- name: Remove the MySQL test database
   mysql_db:
-    name: "wpdb"
+    name: test
+    state: absent
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  tags: [ mysql ]
+
+- name: Creates database for WordPress
+  mysql_db:
+    name: "{{ mysql_db }}"
     state: present
-    login_user: wpuser
-    login_password: 'password'
-          
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  tags: [ mysql ]
+
+- name: Create MySQL user for WordPress
+  mysql_user:
+    name: "{{ mysql_user }}"
+    password: "{{ mysql_password }}"
+    priv: "{{ mysql_db }}.*:ALL"
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  tags: [ mysql ]
+
