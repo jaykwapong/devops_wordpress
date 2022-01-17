@@ -3,4 +3,3 @@
 
 - include_tasks: phpcentos.yml
   when: ansible_distribution == 'CentOS'
-

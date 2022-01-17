@@ -4,8 +4,21 @@
 
 - name: Install LEMP Packages
   apt: name={{ item }} update_cache=yes state=latest
-  loop: [ 'nginx', 'php' ,'mysql-server', 'python3-pymysql', 'php-fpm', 'php-mysql' ]
+  loop: [ 'nginx','mysql-server', 'python3-pymysql', 'php-fpm', 'php-mysql' ]
 
+- name: install php
+  apt: name={{ item }} update_cache=yes state=latest
+  with_items:
+    - php
+    - php-curl
+    - php-xml
+    - php-enchant
+    - php-gd
+    - php-mbstring
+    - php-xmlrpc
+    - php-intl
+    - php-soap
+    - php-zip
 # Nginx Configuration
 
 - name: Sets Nginx conf file
@@ -18,51 +31,12 @@
     src: "/etc/nginx/sites-available/{{ http_conf }}"
     dest: "/etc/nginx/sites-enabled/{{ http_conf }}"
     state: link
-  notify: restart nginx
 
 - name: Removes "default" site
   file:
     path: "/etc/nginx/sites-enabled/default"
     state: absent
-  notify: reload nginx
-
-# MySQL Configuration
-
-# - name: Sets the root password
-#   mysql_user:
-#     name: root
-#     password: "{{ mysql_root_password }}"
-#     login_unix_socket: /var/run/mysqld/mysqld.sock
-
-# - name: Removes all anonymous user accounts
-#   mysql_user:
-#     name: ''
-#     host_all: yes
-#     state: absent
-#     login_user: root
-#     login_password: "{{ mysql_root_password }}"
-
-# - name: Removes the MySQL test database
-#   mysql_db:
-#     name: test
-#     state: absent
-#     login_user: root
-#     login_password: "{{ mysql_root_password }}"
-
-# # UFW Configuration
-
-# - name: "UFW - Allow HTTP on port {{ http_port }}"
-#   ufw:
-#     rule: allow
-#     port: "{{ http_port }}"
-#     proto: tcp
-
-# Sets Up PHP Info Page
-
-- name: Sets Up PHP Info Page
-  template:
-    src: "files/info.php.j2"
-    dest: "/var/www/html/index.php" 
-  notify: restart php-fpm    
+  notify: Reload Nginx
 
 
+  

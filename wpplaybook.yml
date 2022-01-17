@@ -3,7 +3,7 @@
     - vars/default.yml
   become: true
   roles:
-    - nginx
-    - php
+    # - nginx
+    # - php
     - mysql
     - wordpress

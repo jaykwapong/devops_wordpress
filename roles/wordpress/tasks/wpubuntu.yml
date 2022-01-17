@@ -40,4 +40,4 @@
   template:
     src: "files/info.php.j2"
     dest: "/var/www/{{ http_host }}/test.php" 
-  notify: restart php-fpm      
+  notify: Reload Nginx      
