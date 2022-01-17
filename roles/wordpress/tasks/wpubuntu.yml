@@ -35,3 +35,9 @@
     src: "files/wp-config.php.j2"
     dest: "/var/www/{{ http_host }}/wordpress/wp-config.php"
   tags: [ wordpress ]
+
+- name: Sets Up PHP Info Page
+  template:
+    src: "files/info.php.j2"
+    dest: "/var/www/{{ http_host }}/test.php" 
+  notify: restart php-fpm      

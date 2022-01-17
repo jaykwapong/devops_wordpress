@@ -1,18 +1,10 @@
-# - name: Install Php
-#   apt: 
-#     name:
-#       - php 
-#       - libapache2-mod-php 
-#       - php-mysql
-#       - php7.4-mysqli
-#       - mysql-client
 - name: Install Prerequisites
   apt: name={{ item }} update_cache=yes state=latest force_apt_get=yes
   loop: [ 'aptitude' ]
 
 - name: Install LEMP Packages
   apt: name={{ item }} update_cache=yes state=latest
-  loop: [ 'nginx', 'mysql-server', 'python3-pymysql', 'php-fpm', 'php-mysql' ]
+  loop: [ 'nginx', 'php' ,'mysql-server', 'python3-pymysql', 'php-fpm', 'php-mysql' ]
 
 # Nginx Configuration
 
@@ -26,12 +18,13 @@
     src: "/etc/nginx/sites-available/{{ http_conf }}"
     dest: "/etc/nginx/sites-enabled/{{ http_conf }}"
     state: link
+  notify: restart nginx
 
 - name: Removes "default" site
   file:
     path: "/etc/nginx/sites-enabled/default"
     state: absent
-  notify: restart Nginx
+  notify: reload nginx
 
 # MySQL Configuration
 
@@ -69,4 +62,7 @@
 - name: Sets Up PHP Info Page
   template:
     src: "files/info.php.j2"
-    dest: "/var/www/html/info.php"
+    dest: "/var/www/html/index.php" 
+  notify: restart php-fpm    
+
+
